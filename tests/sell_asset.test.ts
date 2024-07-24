@@ -18,6 +18,7 @@ const ethID = "1";
 const randomID = "123";
 const sellAmount = toBN("1", 17);
 const minAmountOut = "0";
+const timeout = 60000;
 
 const newPair = keyring.createFromUri(
   "0x9924bd4ee2bbba5cd0931092717e1f7e6c43d66494c4ac6511c12a3786aa218f"
@@ -59,7 +60,7 @@ describe("sellAsset API fn test", () => {
   test(
     "should swap asset via sellAsset fn",
     {
-      timeout: 60000,
+      timeout: timeout,
     },
     async () => {
       const ownTokensInit: {
@@ -100,7 +101,7 @@ describe("sellAsset API fn test", () => {
   test(
     "should not swap asset when using wrong token id",
     {
-      timeout: 60000,
+      timeout: timeout,
     },
     async () => {
       const api = await mangata.api();
