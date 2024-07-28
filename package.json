@@ -1,0 +1,34 @@
+{
+  "name": "gasp_task",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "vitest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/peterssonz/GASP_task.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/peterssonz/GASP_task/issues"
+  },
+  "homepage": "https://github.com/peterssonz/GASP_task#readme",
+  "devDependencies": {
+    "@types/debug": "^4.1.12",
+    "@types/lodash": "^4.17.7",
+    "@types/ms": "^0.7.34",
+    "typescript": "^5.5.3",
+    "vitest": "^2.0.3"
+  },
+  "dependencies": {
+    "@polkadot/api": "^11.1.1",
+    "@polkadot/keyring": "^13.0.2",
+    "gasp-sdk": "^0.0.2-develop.14",
+    "gasp-types": "^0.0.2-eth-rollup-develop.14",
+    "lodash": "^4.17.21"
+  }
+}
