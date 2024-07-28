@@ -1,6 +1,6 @@
 import "gasp-types";
 import {
-  fromBN,
+  Account,
   Mangata,
   MangataInstance,
   signTx,
@@ -10,6 +10,8 @@ import {
 } from "gasp-sdk";
 import { describe, test, beforeAll, expect } from "vitest";
 import { Keyring } from "@polkadot/keyring";
+import { ApiPromise } from "@polkadot/api";
+import { SubmittableExtrinsic } from "@polkadot/api/types";
 
 const keyring = new Keyring({ type: "ethereum" });
 const ENDPOINT = "wss://collator-01-ws-rollup-holesky.gasp.xyz";
@@ -26,13 +28,13 @@ const newPair = keyring.createFromUri(
 const mangata: MangataInstance = Mangata.instance([ENDPOINT]);
 
 const signAndSendTx = async (
-  api: any,
-  tx: any,
-  pair: any,
+  api: ApiPromise,
+  tx: SubmittableExtrinsic<"promise">,
+  account: Account,
   resolveCondition: (event: any) => boolean
 ) => {
   await new Promise<void>((resolve, reject) => {
-    signTx(api, tx, pair, {
+    signTx(api, tx, account, {
       extrinsicStatus: (events) => {
         if (events.some(resolveCondition)) {
           resolve();
@@ -67,8 +69,8 @@ describe("sellAsset API fn test", () => {
         [id: TokenId]: Token;
       } = await mangata.query.getOwnedTokens(newPair.address);
 
-      const gaspBalanceInit = Number(fromBN(ownTokensInit[0].balance.free));
-      const ethBalanceInit = Number(fromBN(ownTokensInit[1].balance.free));
+      const gaspBalanceInit = ownTokensInit[0].balance.free;
+      const ethBalanceInit = ownTokensInit[1].balance.free;
 
       const api = await mangata.api();
       const tx = await api.tx.xyk.sellAsset(
@@ -87,14 +89,14 @@ describe("sellAsset API fn test", () => {
       const ownTokensAfter: {
         [id: TokenId]: Token;
       } = await mangata.query.getOwnedTokens(newPair.address);
-      const gaspBalance = Number(fromBN(ownTokensAfter[0].balance.free));
-      const ethBalance = Number(fromBN(ownTokensAfter[1].balance.free));
+      const gaspBalance = ownTokensAfter[0].balance.free;
+      const ethBalance = ownTokensAfter[1].balance.free;
 
       expect(ownTokensAfter[0].id).toEqual(gaspID);
       expect(ownTokensAfter[1].id).toEqual(ethID);
 
-      expect(gaspBalanceInit).toBeGreaterThan(gaspBalance);
-      expect(ethBalanceInit).toBeLessThan(ethBalance);
+      expect(gaspBalanceInit.gt(gaspBalance)).toBeTruthy();
+      expect(ethBalanceInit.lt(ethBalance)).toBeTruthy();
     }
   );
 
